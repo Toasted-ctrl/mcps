@@ -1,0 +1,7 @@
+services:
+  example_server:
+    build:
+      context: ./example_server
+    ports:
+      - "10000:8000"
+    restart: unless-stopped
