@@ -1,5 +1,5 @@
 services:
-  RuneScape:
+  runescape:
     build:
       context: ./runescape
     env_file:
