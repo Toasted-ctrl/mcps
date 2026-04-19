@@ -1,14 +1,19 @@
 def unpack_hiscore(input: str) -> dict:
 
+    """Unpacks the hiscore body of text returned from the RuneScape hiscore API."""
+
     hiscores = {}
-    listings = input.split(sep='\n')
-    for i in listings:
-        listing = i.split(sep=',')
-        if i is 0:
-            hiscores['total_level'] = {}
-            hiscores['total_level']['type'] = 'skill'
-            hiscores['total_level']['ranking'] = listing[0]
-            hiscores['total_level']['level'] = listing[1]
-            hiscores['total_level']['exp'] = listing[2]
+    listings = input.split('\n')
+
+    for idx, line in enumerate(listings):
+        listing = line.split(',')
+
+        if idx == 0:
+            hiscores['total_level'] = {
+                'type': 'skill',
+                'ranking': listing[0],
+                'level': listing[1],
+                'exp': listing[2],
+            }
 
     return hiscores
