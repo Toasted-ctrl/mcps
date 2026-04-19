@@ -1,10 +1,11 @@
 def unpack_skill_item(type: str, listing: list) -> dict:
     skill_item = {}
-    if type is 'skill':
+    if type == 'skill':
         skill_item['type'] = 'skill'
         skill_item['ranking'] = listing[0]
         skill_item['level'] = listing[1]
         skill_item['exp'] = listing[2]
+    return skill_item
 
 def unpack_hiscore(input: str) -> dict:
 
