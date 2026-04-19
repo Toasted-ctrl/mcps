@@ -1,9 +1,9 @@
 services:
   RuneScape:
     build:
-      context: ./RuneScape
+      context: ./runescape
     env_file:
-      - ./RuneScape/.env
+      - ./runescape/.env
     ports:
       - "10001:8000"
     restart: unless-stopped
