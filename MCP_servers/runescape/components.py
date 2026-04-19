@@ -15,7 +15,7 @@ def get_player_hiscore(player_name: str) -> dict:
         request.raise_for_status()
         return {
             "message": "Success",
-            "detail": unpack_hiscore(input=str(request.text))   # TODO: Rework this so we have all the proper formatting
+            "detail": unpack_hiscore(input=str(request.text))
         }
     except requests.exceptions.ConnectionError:
         return {
