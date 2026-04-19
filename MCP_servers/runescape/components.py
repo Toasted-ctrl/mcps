@@ -12,7 +12,7 @@ def get_player_hiscore(player_name: str) -> dict:
         request = requests.get(url=url, params=params)
         request.raise_for_status()
         return {
-            "detail": str(request.text())   # TODO: Rework this so we have all the proper formatting
+            "detail": str(request.text)   # TODO: Rework this so we have all the proper formatting
         }
     except requests.exceptions.ConnectionError:
         return {
