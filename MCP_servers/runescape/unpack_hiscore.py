@@ -16,7 +16,7 @@ def unpack_hiscore(input: str) -> dict[str, dict[str, int]]:
     """Unpacks the hiscore body of text returned from the RuneScape hiscore API."""
 
     hiscore_items: list = [
-        "Total Level",
+        "Overall",
         "Attack",
         "Defence",
         "Strength",
@@ -75,16 +75,16 @@ def unpack_hiscore(input: str) -> dict[str, dict[str, int]]:
         "Clue Scrolls Medium",
         "Clue Scrolls Hard",
         "Clue Scrolls Elite",
-        "Clue Scrolls Master",
-        "Leagues Points"
+        "Clue Scrolls Master"
     ]
 
     hiscores = {}
     listings = input.split('\n')
+    print(len(listings))
 
     for idx, line in enumerate(listings):
         listing = line.split(',')
-        if idx <= 29:
+        if idx < 30:
             hiscores[hiscore_items[idx]] = unpack_hiscore_item(type='skill', listing=listing)
         else:
             hiscores[hiscore_items[idx]] = unpack_hiscore_item(type='activity', listing=listing)
