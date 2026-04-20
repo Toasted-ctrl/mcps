@@ -89,7 +89,5 @@ def unpack_hiscore(input: str) -> dict[str, dict[str, int]]:
         listing = line.split(',')
         if idx < 30:
             hiscores[hiscore_items[idx]] = unpack_hiscore_item(type='skill', listing=listing)
-        else:
-            hiscores[hiscore_items[idx]] = unpack_hiscore_item(type='activity', listing=listing)
 
     return hiscores
