@@ -77,7 +77,8 @@ def unpack_hiscore(input: str) -> dict[str, dict[str, int]]:
         "Clue Scrolls Elite",
         "Clue Scrolls Master",
         "League Points",
-        "TEST"
+        "TEST",
+        "TEST2"
     ]
 
     hiscores = {}
