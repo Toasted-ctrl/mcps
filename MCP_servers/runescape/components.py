@@ -3,7 +3,7 @@ import requests
 
 from dotenv import load_dotenv
 
-from unpack_hiscore import unpack_hiscore
+from .unpack_hiscore import unpack_hiscore # NOTE: Double check if this works in prod.
 
 load_dotenv()
 
