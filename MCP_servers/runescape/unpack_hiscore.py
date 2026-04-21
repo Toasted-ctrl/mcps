@@ -76,18 +76,18 @@ def unpack_hiscore(input: str) -> dict[str, dict[str, int]]:
         "Clue Scrolls Hard",
         "Clue Scrolls Elite",
         "Clue Scrolls Master",
-        "League Points",
-        "TEST",
-        "TEST2"
+        "League Points"
     ]
 
     hiscores = {}
     listings = input.split('\n')
-    print(len(listings))
 
     for idx, line in enumerate(listings):
         listing = line.split(',')
         if idx < 30:
             hiscores[hiscore_items[idx]] = unpack_hiscore_item(type='skill', listing=listing)
+
+        elif idx > 29 and idx < 61:
+            hiscores[hiscore_items[idx]] = unpack_hiscore_item(type='activity', listing=listing)
 
     return hiscores
