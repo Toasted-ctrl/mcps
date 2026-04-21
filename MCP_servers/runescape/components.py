@@ -8,6 +8,8 @@ from .unpack_hiscore import unpack_hiscore # NOTE: Double check if this works in
 load_dotenv()
 
 def get_player_hiscore(player_name: str) -> dict:
+    if player_name == "":
+        raise ValueError("Player name must not be None")
     url = os.getenv(key="RUNESCAPE_HISCORE_URL")
     params = {"player": player_name}
     try:
@@ -26,4 +28,9 @@ def get_player_hiscore(player_name: str) -> dict:
         return {
             "error": "http_error",
             "message": "Could not connect to RuneScape's hiscore services"
+        }
+    except ValueError as verr:
+        return {
+            "error": "ValueError",
+            "messages": verr
         }
