@@ -3,11 +3,7 @@ from fastmcp import FastMCP
 from components import get_player_hiscore
 
 mcp = FastMCP(
-    name="RuneScape",
-    meta={
-        "version": "0.1",
-        "author": "Toasted-ctrl"
-    })
+    name="RuneScape")
 
 @mcp.tool()
 def get_runescape_player_current_hiscore(
