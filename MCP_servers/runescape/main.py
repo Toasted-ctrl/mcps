@@ -2,7 +2,12 @@ from fastmcp import FastMCP
 
 from components import get_player_hiscore
 
-mcp = FastMCP("RuneScape MCP")
+mcp = FastMCP(
+    name="RuneScape",
+    meta={
+        "version": "0.1",
+        "author": "Toasted-ctrl"
+    })
 
 @mcp.tool()
 def get_runescape_player_current_hiscore(
@@ -14,6 +19,8 @@ def get_runescape_player_current_hiscore(
     A specific player's name (player_name) must be specified.
 
     Do NOT use this tool if the user asks any other question.
+
+    Do NOT provide any arguments besides the player_name.
 
     Returns:
     - A dictionary of stats / hiscores related to the specified RuneScape player."""
