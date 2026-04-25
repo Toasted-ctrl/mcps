@@ -4,11 +4,12 @@ def unpack_hiscore_item(type: str, listing: list) -> dict:
         item['type'] = 'skill'
         item['ranking'] = listing[0]
         item['level'] = listing[1]
-        item['exp'] = listing[2]
+        item['exp_score'] = listing[2]
     if type == 'activity':
         item['type'] = 'activity'
         item['ranking'] = listing[0]
-        item['score'] = listing[1]
+        item['level'] = None
+        item['exp_score'] = listing[1]
     return item
 
 def unpack_hiscore(input: str) -> dict[str, dict[str, int]]:
