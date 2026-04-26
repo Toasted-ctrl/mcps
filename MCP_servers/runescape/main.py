@@ -6,7 +6,7 @@ mcp = FastMCP(
     name="RuneScape MCP")
 
 @mcp.tool(
-    name="Get RuneScape Player Current Hiscore",
+    name="get_runescape_player_current_hiscore",
     version="1.0.0",
     meta={
         "author": "Toasted-ctrl"
@@ -30,7 +30,7 @@ def get_current_hiscore(
     return get_player_hiscore(player_name=player_name)
 
 @mcp.tool(
-    name="Get RuneScape Grand Exchange Item",
+    name="get_runescape_grand_exchange_item",
     version="0.1.0",
     meta={
         "author": "Toasted-ctrl"
