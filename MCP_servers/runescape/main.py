@@ -90,7 +90,8 @@ def get_tracked_hiscore_players() -> dict:
             "tracked_users_hiscores": users
         }
     
-    except Exception:
+    except Exception as e:
+        print(e)
         return {
             "error": "Unexpected error"
         }
