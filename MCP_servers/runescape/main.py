@@ -67,7 +67,6 @@ def get_grand_exchange_item(
     return get_grand_exchange_item_id(item_id=item_id)
 
 @mcp.tool(
-    uri="hiscores://tracked_users",
     name="get_runescape_tracked_hiscore_players",
     version="0.1.0",
     meta={
