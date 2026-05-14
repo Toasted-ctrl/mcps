@@ -11,7 +11,8 @@ mcp = FastMCP(
     version="1.0.0",
     meta={
         "author": "Toasted-ctrl"
-    }
+    },
+
 )
 def get_current_hiscore(
     player_name: str
@@ -71,9 +72,10 @@ def get_grand_exchange_item(
     version="0.1.0",
     meta={
         "author": "Toasted-ctrl"
-    }
+    },
+    mime_type="application/json"
 )
-def get_tracked_hiscore_players() -> dict[str, list[str]]:
+def get_tracked_hiscore_players() -> dict:
     
     """Retrieves a list of players / usernames for which currently historical hiscore data is being tracked.
     
@@ -85,7 +87,7 @@ def get_tracked_hiscore_players() -> dict[str, list[str]]:
     - List of usernames: str"""
 
     try:
-        users = get_tracked_hs_users()
+        users: list = get_tracked_hs_users()
         return {
             "tracked_users_hiscores": users
         }
