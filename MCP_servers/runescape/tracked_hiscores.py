@@ -1,4 +1,5 @@
 from sqlalchemy import Column, Integer, String, func, DateTime, text
+from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import DeclarativeBase
 
 from config import mcp_config
@@ -26,23 +27,22 @@ def get_tracked_hs_users() -> list:
         result = db.query(StageTrackedUsersHiscores_1.username).all()
         return [row.username for row in result]
     
-def post_tracked_users(usernames: tuple):
+def post_tracked_user(username: str) -> str:
 
-    """Processes new users to be tracked. Returns a tuple with: list of newly added users,
-    and list of users that were already tracked."""
+    """Processes new user to be tracked. Returns the username if added successfully."""
 
-    users = [arg for arg in usernames]
-    new_users = []
-    present_users = []
     with get_db_session(db_url=mcp_config.db_url) as db:
-        for user in users:
+        if not (
+            db.query(StageTrackedUsersHiscores_1.username)
+            .filter(StageTrackedUsersHiscores_1.username == username)
+            .scalar()
+        ):
             try:
-                if not db.query(StageTrackedUsersHiscores_1.username == user).scalar():
-                    db.add(ProdMCPTrackedUsers(username=user))
-                    new_users.append(user)
-                    continue
-                present_users.append(user)
-            except Exception:
-                present_users.append(user)
-        db.commit()
-        return new_users, present_users
+                db.add(ProdMCPTrackedUsers(username=username))
+                db.commit()
+            except IntegrityError as e:
+                db.rollback()
+                if e.orig.pgcode == '23505': # unique_violation
+                    return username
+                raise
+        return username
