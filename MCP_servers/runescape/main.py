@@ -1,7 +1,8 @@
 from fastmcp import FastMCP
+from sqlalchemy.exc import IntegrityError
 
 from components import get_player_hiscore, get_grand_exchange_item_id
-from tracked_hiscores import get_tracked_hs_users, post_tracked_users
+from tracked_hiscores import get_tracked_hs_users, post_tracked_user
 
 mcp = FastMCP(
     name="RuneScape MCP")
@@ -91,9 +92,8 @@ def get_tracked_hiscore_players() -> dict:
         }
     
     except Exception as e:
-        print(e)
         return {
-            "error": "Unexpected error"
+            "UnexpectedError": str(e)
         }
     
 @mcp.tool(
@@ -103,29 +103,30 @@ def get_tracked_hiscore_players() -> dict:
         "author": "Toasted-ctrl"
     }
 )
-def post_track_users(*args) -> dict:
+def post_track_user(username: str) -> dict:
 
     """Adds new user for which hiscores / stats / runemetrics profiles need to be tracked.
     
-    Only use this tool when the user is requesting to add tracking for new players / usernames.
+    Only use this tool when the user is requesting to add tracking a player / username.
 
-    Provide ONLY usernames as arguments. Usernames must be strings.
+    Provide ONLY a username as argument, the username must be a string.
 
-    Returns:
-    - List of usernames that were added.
-    - List of usernames that were already tracked before, no need to be added again."""
+    Returns the username if added successfully."""
 
     try:
-        added_users, existing_users = post_tracked_users(args=args)
+        added_user = post_tracked_user(username=username)
         return {
-            "added_tracking": added_users,
-            "already_tracked_prior": existing_users
+            "added_tracking": added_user,
         }
     
-    except Exception as e:
-        print(e)
+    except IntegrityError as e:
         return {
-            "error": "Unexpected Error"
+            "IntegrityError": str(e)
+        }
+
+    except Exception as e:
+        return {
+            "UnexpectedError": str(e)
         }
 
 if __name__ == "__main__":
