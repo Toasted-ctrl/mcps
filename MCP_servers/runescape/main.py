@@ -1,7 +1,7 @@
 from fastmcp import FastMCP
 
 from components import get_player_hiscore, get_grand_exchange_item_id
-from tracked_hiscores import get_tracked_hs_users
+from tracked_hiscores import get_tracked_hs_users, post_tracked_users
 
 mcp = FastMCP(
     name="RuneScape MCP")
@@ -94,6 +94,38 @@ def get_tracked_hiscore_players() -> dict:
         print(e)
         return {
             "error": "Unexpected error"
+        }
+    
+@mcp.tool(
+    name="post_runescape_tracked_users",
+    version="0.1.0",
+    meta={
+        "author": "Toasted-ctrl"
+    }
+)
+def post_track_users(*args) -> dict:
+
+    """Adds new user for which hiscores / stats / runemetrics profiles need to be tracked.
+    
+    Only use this tool when the user is requesting to add tracking for new players / usernames.
+
+    Provide ONLY usernames as arguments. Usernames must be strings.
+
+    Returns:
+    - List of usernames that were added.
+    - List of usernames that were already tracked before, no need to be added again."""
+
+    try:
+        added_users, existing_users = post_tracked_users(args=args)
+        return {
+            "added_tracking": added_users,
+            "already_tracked_prior": existing_users
+        }
+    
+    except Exception as e:
+        print(e)
+        return {
+            "error": "Unexpected Error"
         }
 
 if __name__ == "__main__":
