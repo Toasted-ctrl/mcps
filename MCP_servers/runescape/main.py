@@ -103,18 +103,18 @@ def get_tracked_hiscore_players() -> dict:
         "author": "Toasted-ctrl"
     }
 )
-def post_track_user(username: str) -> dict:
+def post_track_user(player_name: str) -> dict:
 
-    """Adds new user for which hiscores / stats / runemetrics profiles need to be tracked.
+    """Adds a new user / username / player_name for which hiscores / stats / runemetrics profiles need to be tracked.
     
-    Only use this tool when the user is requesting to add tracking a player / username.
+    Only use this tool when the user is requesting to add tracking a player / user.
 
-    Provide ONLY a username as argument, the username must be a string.
+    Provide ONLY a player_name as argument, the player_name must be a string.
 
-    Returns the username if added successfully."""
+    Returns the player_name if added successfully."""
 
     try:
-        added_user = post_tracked_user(username=username)
+        added_user = post_tracked_user(player_name=player_name)
         return {
             "added_tracking": added_user,
         }
