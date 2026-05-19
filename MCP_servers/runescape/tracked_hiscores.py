@@ -62,20 +62,26 @@ def post_tracked_user(player_name: str) -> str:
 
     """Processes new user to be tracked. Returns the username if added successfully."""
 
-    # TODO: If a player already exists as name, create function to check if is_active is False.
-    # TODO: If it is false, update to True.
-
     with get_db_session(db_url=mcp_config.db_url) as db:
         db.flush()
-        try:
-            db.add(ProdTrackedUsers(player_name=player_name, is_active=True))
+        tracked_player: ProdTrackedUsers = (
+            db.query(ProdTrackedUsers)
+            .filter(ProdTrackedUsers-player_name == player_name)
+            .scalar()
+        )
+        if not tracked_player:
+            new_tracked_player = ProdTrackedUsers(
+                is_active=True,
+                player_name=player_name
+            )
+            db.add(new_tracked_player)
             db.commit()
-            return player_name
-        except IntegrityError as e:
-            db.rollback()
-            if e.orig.pg_code == "23505": # NOTE: Unique violation code
-                return player_name
-            raise
+            return new_tracked_player.player_name
+        if not tracked_player.is_active:
+            tracked_player.is_active = True
+            db.commit()
+            return tracked_player.player_name
+        raise ValueError(f"'{player_name}' is already being tracked")
 
 def disable_tracking(player_name: str) -> str:
 
@@ -84,6 +90,7 @@ def disable_tracking(player_name: str) -> str:
     Return ths username if updates successfully."""
 
     with get_db_session(db_url=mcp_config.db_url) as db:
+        db.flush()
         tracked_user: ProdTrackedUsers = (
             db.query(ProdTrackedUsers)
             .filter(

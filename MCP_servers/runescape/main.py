@@ -41,7 +41,7 @@ def get_current_hiscore(
     }
 )
 def get_grand_exchange_item(
-    item_id: int
+    item_id: Annotated[int, Field(description="Integer representing the id of the item.")]
 ) -> dict:
 
     """Retrieves Grand Exhange information for an item that can be sold on the Grand Exchange.
@@ -78,58 +78,48 @@ def get_grand_exchange_item(
 def get_tracked_hiscore_players() -> dict:
     
     """Retrieves a list of players / usernames for which currently historical hiscore data is being tracked.
-    
     Only use this tool when the user is asking for information on who / what player / what user is being tracked when it regards hiscores.
-    
-    Do NOT provide any arguments for this tool.
-    
     Returns:
     - List of usernames: str"""
 
     try:
-        users: list = get_tracked_hs_users()
         return {
-            "tracked_users_hiscores": users
+            "tracked_users_hiscores": get_tracked_hs_users()
         }
     
     except Exception as e:
         return {
-            "UnexpectedError": str(e)
+            "unexpectedError": str(e)
         }
     
 @mcp.tool(
     name="post_runescape_tracked_users",
-    version="0.1.0",
+    version="0.1.1",
     meta={
         "author": "Toasted-ctrl"
     }
 )
 def post_track_user(
     player_name: Annotated[str, Field(description="Name of the RuneScape player.")]
-) -> dict:
+) -> dict[str, str]:
 
     """Adds a new user / username / player_name for which hiscores / stats / runemetrics profiles need to be tracked.
-    
     Only use this tool when the user is requesting to add tracking a player / user.
-
-    Provide ONLY a player_name as argument, the player_name must be a string.
-
     Returns the player_name if added successfully."""
 
     try:
-        added_user = post_tracked_user(player_name=player_name)
         return {
-            "added_tracking": added_user,
+            "tracking_enabled": post_tracked_user(player_name=player_name),
         }
     
-    except IntegrityError as e:
+    except ValueError as e:
         return {
-            "IntegrityError": str(e)
+            "valueError": str(e)
         }
 
     except Exception as e:
         return {
-            "UnexpectedError": str(e)
+            "unexpectedError": str(e)
         }
     
 @mcp.tool(
