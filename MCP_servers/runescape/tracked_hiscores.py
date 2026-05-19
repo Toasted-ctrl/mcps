@@ -8,6 +8,9 @@ from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
 from config import mcp_config
 from db import get_db_session
 
+class NotFoundError(Exception):
+    pass
+
 class Base(DeclarativeBase):
     pass
 
@@ -73,3 +76,23 @@ def post_tracked_user(player_name: str) -> str:
             if e.orig.pg_code == "23505": # NOTE: Unique violation code
                 return player_name
             raise
+
+def disable_tracking(player_name: str) -> str:
+
+    """Disables tracking for a tracked player.
+    Note that this does NOT REMOVE them from the database, so we can keep the original ids in place.
+    Return ths username if updates successfully."""
+
+    with get_db_session(db_url=mcp_config.db_url) as db:
+        tracked_user: ProdTrackedUsers = (
+            db.query(ProdTrackedUsers)
+            .filter(
+                ProdTrackedUsers.player_name == player_name,
+                ProdTrackedUsers.is_active.is_(True))
+            .scalar()
+        )
+        if not tracked_user:
+            raise NotFoundError(f"No tracking active for user '{player_name}'")
+        tracked_user.is_active = False
+        db.commit()
+        return tracked_user.player_name

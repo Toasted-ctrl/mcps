@@ -1,8 +1,10 @@
 from fastmcp import FastMCP
+from pydantic import Field
 from sqlalchemy.exc import IntegrityError
+from typing import Annotated
 
 from components import get_player_hiscore, get_grand_exchange_item_id
-from tracked_hiscores import get_tracked_hs_users, post_tracked_user
+from tracked_hiscores import get_tracked_hs_users, post_tracked_user, disable_tracking, NotFoundError
 
 mcp = FastMCP(
     name="RuneScape MCP")
@@ -13,10 +15,9 @@ mcp = FastMCP(
     meta={
         "author": "Toasted-ctrl"
     },
-
 )
 def get_current_hiscore(
-    player_name: str
+    player_name: Annotated[str, Field(description="Name of the RuneScape player.")]
 ) -> dict:
     """Retrieves and returns the current hiscore listings for the specified RuneScape player.
     
@@ -103,7 +104,9 @@ def get_tracked_hiscore_players() -> dict:
         "author": "Toasted-ctrl"
     }
 )
-def post_track_user(player_name: str) -> dict:
+def post_track_user(
+    player_name: Annotated[str, Field(description="Name of the RuneScape player.")]
+) -> dict:
 
     """Adds a new user / username / player_name for which hiscores / stats / runemetrics profiles need to be tracked.
     
@@ -127,6 +130,32 @@ def post_track_user(player_name: str) -> dict:
     except Exception as e:
         return {
             "UnexpectedError": str(e)
+        }
+    
+@mcp.tool(
+    name="disable_runescape_tracked_user",
+    version="0.1.0",
+    meta={
+        "author": "Toasted-ctrl"
+    }
+)
+def disable_tracking_user(
+    player_name: Annotated[str, Field(description="Name of the RuneScape player.")]
+) -> dict[str, str]:
+    
+    """This function disables tracking for a RuneScape player, if the player is CURRENTLY actively being tracked.
+    Returns the player_name if tracking was successfully disabled.
+    Will return an error if the player's tracking is already disabled,
+    or if the player does not exist in the tracking database."""
+
+    try:
+        return {
+            "tracking_disabled": disable_tracking(player_name=player_name)
+        }
+    
+    except NotFoundError as e:
+        return {
+            "notFoundError": str(e)
         }
 
 if __name__ == "__main__":
