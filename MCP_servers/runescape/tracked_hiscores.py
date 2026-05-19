@@ -66,7 +66,7 @@ def post_tracked_user(player_name: str) -> str:
         db.flush()
         tracked_player: ProdTrackedUsers = (
             db.query(ProdTrackedUsers)
-            .filter(ProdTrackedUsers-player_name == player_name)
+            .filter(ProdTrackedUsers.player_name == player_name)
             .scalar()
         )
         if not tracked_player:
