@@ -4,7 +4,7 @@ import sys
 def get_logger(
     name: str = "MCP_RuneScape",
     level: int = logging.DEBUG,
-    fmt: str = "%(levelname)-8s | %(asctime)s | Func: %(funcName)s | Mod: %(module)s | %(message)s",
+    fmt: str = "%(levelname)-9s %(asctime)s | Func: %(funcName)s | Mod: %(module)s | %(message)s",
     datefmt: str = "%Y-%m-%d %H:%M:%S"
 ) -> logging.Logger:
     
