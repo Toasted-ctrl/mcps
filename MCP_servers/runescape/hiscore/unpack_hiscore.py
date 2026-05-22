@@ -1,4 +1,7 @@
 def unpack_hiscore_item(type: str, listing: list) -> dict:
+
+    """Unpacks a hiscore item."""
+
     item = {}
     if type == 'skill':
         item['type'] = 'skill'

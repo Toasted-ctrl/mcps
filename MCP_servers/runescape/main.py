@@ -1,10 +1,17 @@
 from fastmcp import FastMCP
 from pydantic import Field
-from sqlalchemy.exc import IntegrityError
+from sqlalchemy.exc import SQLAlchemyError
 from typing import Annotated
 
-from components import get_player_hiscore, get_grand_exchange_item_id
-from tracked_hiscores import get_tracked_hs_users, post_tracked_user, disable_tracking, NotFoundError
+from db.errors import NotFoundError
+from ge.rs_api_get_item import get_grand_exchange_item_id
+from hiscore.rs_api_get_hiscore import get_player_hiscore
+
+from hiscore.tracked_hiscores import (
+    get_tracked_hs_users,
+    post_tracked_user,
+    disable_tracking
+)
 
 mcp = FastMCP(
     name="RuneScape MCP")
@@ -51,8 +58,6 @@ def get_grand_exchange_item(
     
     Do NOT use this tool for hiscore related queries.
     
-    Do NOT provide any arguments besides the item_id.
-    
     Returns a dictionary which includes:
     - The item type: str
     - The item id: int
@@ -87,9 +92,14 @@ def get_tracked_hiscore_players() -> dict:
             "tracked_users_hiscores": get_tracked_hs_users()
         }
     
+    except SQLAlchemyError as e:
+        return {
+            "database_error": "A database error occurred. Check server logs for details."
+        }
+    
     except Exception as e:
         return {
-            "unexpectedError": str(e)
+            "unexpected_error": "An unexpected error occurred. Check server logs for details."
         }
     
 @mcp.tool(
@@ -114,12 +124,17 @@ def post_track_user(
     
     except ValueError as e:
         return {
-            "valueError": str(e)
+            "value_error": str(e)
+        }
+    
+    except SQLAlchemyError as e:
+        return {
+            "database_error": "A database error occurred. Check server logs for details."
         }
 
     except Exception as e:
         return {
-            "unexpectedError": str(e)
+            "unexpected_error": "An unexpected error occurred. Check server logs for details."
         }
     
 @mcp.tool(
@@ -145,7 +160,7 @@ def disable_tracking_user(
     
     except NotFoundError as e:
         return {
-            "notFoundError": str(e)
+            "not_found_error": str(e)
         }
 
 if __name__ == "__main__":
