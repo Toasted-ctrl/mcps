@@ -40,8 +40,15 @@ def get_current_hiscore(
 
     Returns:
     - A dictionary of stats / hiscores related to the specified RuneScape player."""
-
-    return get_player_hiscore(player_name=player_name)
+    try:
+        log.info(f"Argument(s): player_name = '{player_name}'.")
+        return get_player_hiscore(player_name=player_name)
+    
+    except Exception as e:
+        log.error(str(e))
+        return {
+            "unexpected_error": "An unexpected error occurred. Check server logs for details."
+        }
 
 @mcp.tool(
     name="get_runescape_grand_exchange_item",
@@ -73,8 +80,15 @@ def get_grand_exchange_item(
         - day30
         - day90
         - day180"""
+    try:
+        log.info(f"Argument(s): item_id = '{item_id}'.")
+        return get_grand_exchange_item_id(item_id=item_id)
 
-    return get_grand_exchange_item_id(item_id=item_id)
+    except Exception as e:
+        log.error(str(e))
+        return {
+            "unexpected_error": "An unexpected error occurred. Check server logs for details."
+        }
 
 @mcp.tool(
     name="get_runescape_tracked_hiscore_players",
@@ -91,7 +105,7 @@ def get_tracked_hiscore_players() -> dict:
     - List of usernames: str"""
 
     try:
-        log.info("Running, no arguments required.")
+        log.info()
         return {
             "tracked_users_hiscores": get_tracked_hs_users()
         }
@@ -124,7 +138,7 @@ def post_track_user(
     Returns the player_name if added successfully."""
 
     try:
-        log.info(f"Running with argument: '{player_name}'.")
+        log.info(f"Argument(s): player_name = '{player_name}'.")
         return {
             "tracking_enabled": post_tracked_user(player_name=player_name),
         }
@@ -164,7 +178,7 @@ def disable_tracking_user(
     or if the player does not exist in the tracking database."""
 
     try:
-        log.info(f"Running with argument: '{player_name}'.")
+        log.info(f"Arguments: player_name = '{player_name}'.")
         return {
             "tracking_disabled": disable_tracking(player_name=player_name)
         }
