@@ -91,6 +91,7 @@ def get_tracked_hiscore_players() -> dict:
     - List of usernames: str"""
 
     try:
+        log.info("Running, no arguments required.")
         return {
             "tracked_users_hiscores": get_tracked_hs_users()
         }
@@ -123,11 +124,13 @@ def post_track_user(
     Returns the player_name if added successfully."""
 
     try:
+        log.info(f"Running with argument: '{player_name}'.")
         return {
             "tracking_enabled": post_tracked_user(player_name=player_name),
         }
     
     except ValueError as e:
+        log.info(str(e))
         return {
             "value_error": str(e)
         }
@@ -161,11 +164,13 @@ def disable_tracking_user(
     or if the player does not exist in the tracking database."""
 
     try:
+        log.info(f"Running with argument: '{player_name}'.")
         return {
             "tracking_disabled": disable_tracking(player_name=player_name)
         }
     
     except NotFoundError as e:
+        log.info(str(e))
         return {
             "not_found_error": str(e)
         }
