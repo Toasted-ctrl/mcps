@@ -38,7 +38,7 @@ def post_tracked_user(player_name: str) -> str:
             tracked_player.is_active = True
             db.commit()
             return tracked_player.player_name
-        raise ValueError(f"'{player_name}' is already being tracked")
+        raise ValueError(f"'{player_name}' is already tracked")
 
 def disable_tracking(player_name: str) -> str:
 
@@ -55,7 +55,7 @@ def disable_tracking(player_name: str) -> str:
             .one_or_none()
         )
         if not tracked_user:
-            raise NotFoundError(f"No tracking active for user '{player_name}'")
+            raise NotFoundError(f"No tracking active for '{player_name}'")
         tracked_user.is_active = False
         db.commit()
         return tracked_user.player_name
