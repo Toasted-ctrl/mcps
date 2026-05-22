@@ -3,6 +3,7 @@ from pydantic import Field
 from sqlalchemy.exc import SQLAlchemyError
 from typing import Annotated
 
+from core.logger import get_logger
 from db.errors import NotFoundError
 from ge.rs_api_get_item import get_grand_exchange_item_id
 from hiscore.rs_api_get_hiscore import get_player_hiscore
@@ -15,6 +16,8 @@ from hiscore.tracked_hiscores import (
 
 mcp = FastMCP(
     name="RuneScape MCP")
+
+log = get_logger()
 
 @mcp.tool(
     name="get_runescape_player_current_hiscore",
@@ -93,11 +96,13 @@ def get_tracked_hiscore_players() -> dict:
         }
     
     except SQLAlchemyError as e:
+        log.error(str(e))
         return {
             "database_error": "A database error occurred. Check server logs for details."
         }
-    
+
     except Exception as e:
+        log.error(str(e))
         return {
             "unexpected_error": "An unexpected error occurred. Check server logs for details."
         }
@@ -128,11 +133,13 @@ def post_track_user(
         }
     
     except SQLAlchemyError as e:
+        log.error(str(e))
         return {
             "database_error": "A database error occurred. Check server logs for details."
         }
 
     except Exception as e:
+        log.error(str(e))
         return {
             "unexpected_error": "An unexpected error occurred. Check server logs for details."
         }
@@ -161,6 +168,18 @@ def disable_tracking_user(
     except NotFoundError as e:
         return {
             "not_found_error": str(e)
+        }
+    
+    except SQLAlchemyError as e:
+        log.error(str(e))
+        return {
+            "database_error": "A database error occurred. Check server logs for details."
+        }
+    
+    except Exception as e:
+        log.error(str(e))
+        return {
+            "unexpected_error": "An unexpected error occurred. Check server logs for details."
         }
 
 if __name__ == "__main__":
