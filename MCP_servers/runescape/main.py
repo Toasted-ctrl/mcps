@@ -1,3 +1,4 @@
+from datetime import datetime
 from fastmcp import FastMCP
 from pydantic import Field
 from sqlalchemy.exc import SQLAlchemyError
@@ -11,7 +12,8 @@ from hiscore.rs_api_get_hiscore import get_player_hiscore
 from hiscore.tracked_hiscores import (
     get_tracked_hs_users,
     post_tracked_user,
-    disable_tracking
+    disable_tracking,
+    get_user_historical_hs_item
 )
 
 mcp = FastMCP(
@@ -181,6 +183,51 @@ def disable_tracking_user(
         log.info(f"Args: player_name = '{player_name}'")
         return {
             "tracking_disabled": disable_tracking(player_name=player_name)
+        }
+    
+    except NotFoundError as e:
+        log.info(str(e))
+        return {
+            "not_found_error": str(e)
+        }
+    
+    except SQLAlchemyError as e:
+        log.error(str(e))
+        return {
+            "database_error": "A database error occurred. Check server logs for details."
+        }
+    
+    except Exception as e:
+        log.error(str(e))
+        return {
+            "unexpected_error": "An unexpected error occurred. Check server logs for details."
+        }
+    
+@mcp.tool(
+    name="get_runescape_player_historical_hiscore_item",
+    version="0.1.0",
+    meta={
+        "author": "Toasted-ctrl"
+    }
+)
+def get_runescape_player_historical_hiscore_item(
+    player_name: Annotated[str, Field(description="Name of the RuneScape player.")],
+    skill_or_activity: Annotated[str, Field(description="The activity or skill for which the player's stats need to be retrieved.")],
+    min_date: Annotated[datetime, Field(description="Earliest date for which the record needs to be retrieved.")]=datetime(1970, 1, 1)
+) -> dict:
+    
+    """Only use this function to fetch historical records for a skill or activity for a tracked player.
+    If records are stored, a dictionary with the player records will be returned.
+    The returned dict is based on the first found date FROM the indicated min_date."""
+    
+    try:
+        return {
+            "player_name": player_name,
+            "historical_record": get_user_historical_hs_item(
+                player_name=player_name,
+                skill_or_activity=skill_or_activity,
+                min_date=min_date
+            )
         }
     
     except NotFoundError as e:

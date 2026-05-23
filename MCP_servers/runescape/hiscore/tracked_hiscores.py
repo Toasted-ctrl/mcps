@@ -1,9 +1,11 @@
-from sqlalchemy.exc import SQLAlchemyError
+import uuid
+
+from datetime import datetime
 
 from core.config import mcp_config
 from db.errors import NotFoundError
 from db.session import get_db_session
-from db.schemas import ProdTrackedUsers
+from db.schemas import ProdTrackedUsers, StageHiscores_1
 
 def get_tracked_hs_users() -> list:
     with get_db_session(db_url=mcp_config.db_url) as db:
@@ -59,3 +61,41 @@ def disable_tracking(player_name: str) -> str:
         tracked_user.is_active = False
         db.commit()
         return tracked_user.player_name
+    
+def get_user_historical_hs_item(
+    player_name: str,
+    skill_or_activity: str = "Overall",
+    min_date: datetime = datetime(1970, 1, 1)
+) -> dict:
+    
+    username = player_name.strip().replace(" ", "_")
+    
+    with get_db_session(db_url=mcp_config.db_url) as db:
+        player_id: uuid.UUID = (
+            db.query(ProdTrackedUsers.id)
+            .filter(ProdTrackedUsers.player_name == username)
+            .scalar()
+        )
+        if player_id is None:
+            raise NotFoundError(f"No player found with name '{player_name}'")
+        query = (
+            db.query(
+                StageHiscores_1.name,
+                StageHiscores_1.ingest_date,
+                StageHiscores_1.rank,
+                StageHiscores_1.level,
+                StageHiscores_1.type,
+                StageHiscores_1.points)
+            .filter(
+                StageHiscores_1.source_id == player_id,
+                StageHiscores_1.name == skill_or_activity,
+                StageHiscores_1.ingest_date >= min_date
+            )
+            .order_by(
+                StageHiscores_1.ingest_date.asc()
+            )
+            .first()
+        )
+        if query is None:
+            raise NotFoundError(f"No historical records found for '{player_name}' from {min_date}")
+        return query._asdict()
