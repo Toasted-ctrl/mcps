@@ -253,6 +253,7 @@ if __name__ == "__main__":
     # TODO: find out why we there are issues with "streamable-http"
 
     mcp.run(
-        transport="sse",
+        transport="streamable-http",
         host="0.0.0.0",
-        port=8000)
+        port=8000,
+        path="/mcp")
