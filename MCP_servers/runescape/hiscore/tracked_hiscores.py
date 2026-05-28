@@ -1,6 +1,6 @@
 import uuid
 
-from datetime import datetime
+from datetime import datetime, timedelta
 
 from core.config import mcp_config
 from db.errors import NotFoundError
@@ -65,8 +65,25 @@ def disable_tracking(player_name: str) -> str:
 def get_user_historical_hs_item(
     player_name: str,
     skill_or_activity: str = "Overall",
-    min_date: datetime = datetime(1970, 1, 1)
+    date: str = None,
+    time: str = None
 ) -> dict:
+    
+    if date is None:
+        request_date = datetime(1970, 1, 1)
+
+    elif date is not None:
+        date_split = date.split('-')
+        year = int(date_split[0])
+        month = int(date_split[1])
+        day = int(date_split[2])
+        request_date = datetime(year, month, day)
+
+    if time is not None:
+        time_split = time.split(':')
+        hours = int(time_split)[0]
+        minutes = int(time_split)[1]
+        request_date + timedelta(hours=hours, minutes=minutes)
     
     username = player_name.strip().replace(" ", "_")
     
@@ -89,7 +106,7 @@ def get_user_historical_hs_item(
             .filter(
                 StageHiscores_1.source_id == player_id,
                 StageHiscores_1.name == skill_or_activity,
-                StageHiscores_1.ingest_date >= min_date
+                StageHiscores_1.ingest_date >= request_date
             )
             .order_by(
                 StageHiscores_1.ingest_date.asc()
@@ -97,5 +114,5 @@ def get_user_historical_hs_item(
             .first()
         )
         if query is None:
-            raise NotFoundError(f"No historical records found for '{player_name}' from {min_date}")
+            raise NotFoundError(f"No historical records found for '{player_name}' from {request_date}")
         return query._asdict()

@@ -2,7 +2,7 @@ from datetime import datetime
 from fastmcp import FastMCP
 from pydantic import Field
 from sqlalchemy.exc import SQLAlchemyError
-from typing import Annotated
+from typing import Annotated, Optional
 
 from core.logger import get_logger
 from db.errors import NotFoundError
@@ -213,7 +213,8 @@ def disable_tracking_user(
 def get_runescape_player_historical_hiscore_item(
     player_name: Annotated[str, Field(description="Name of the RuneScape player.")],
     skill_or_activity: Annotated[str, Field(description="The activity or skill for which the player's stats need to be retrieved.")],
-    min_date: Annotated[datetime, Field(description="Earliest date for which the record needs to be retrieved.")]=datetime(1970, 1, 1)
+    date: Annotated[Optional[str], Field(description="Earliest date for which the record needs to be retrieved, example: '2026-05-11' (yyyy-mm-dd).")] = None,
+    time: Annotated[Optional[str], Field(description="Earliest time for which the record needs to be retrieved, example: '13:11'.")] = None
 ) -> dict:
     
     """Only use this function to fetch historical records for a skill or activity for a tracked player.
@@ -226,7 +227,8 @@ def get_runescape_player_historical_hiscore_item(
             "historical_record": get_user_historical_hs_item(
                 player_name=player_name,
                 skill_or_activity=skill_or_activity,
-                min_date=min_date
+                date=date,
+                time=time
             )
         }
     
