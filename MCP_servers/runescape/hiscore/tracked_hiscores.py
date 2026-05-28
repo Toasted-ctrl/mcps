@@ -81,8 +81,8 @@ def get_user_historical_hs_item(
 
     if time is not None:
         time_split = time.split(':')
-        hours = int(time_split)[0]
-        minutes = int(time_split)[1]
+        hours = int(time_split[0])
+        minutes = int(time_split[1])
         request_date + timedelta(hours=hours, minutes=minutes)
     
     username = player_name.strip().replace(" ", "_")
