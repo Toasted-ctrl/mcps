@@ -264,8 +264,7 @@ def get_runescape_player_historical_hiscore_item(
         }
 
 if __name__ == "__main__":
-    
-    # NOTE: Starting the prometheus metrics server
+    log.info("Starting Prometheus server")
     start_http_server(
         port=8989,
         addr="0.0.0.0"
