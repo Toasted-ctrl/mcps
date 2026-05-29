@@ -31,9 +31,3 @@ def get_player_hiscore(player_name: str) -> dict:
             "message": "Could not connect to RuneScape's Hiscore services"
         }
     
-    except ValueError as err:
-        return {
-            "error": "ValueError",
-            "message": str(err)
-        }
-    
