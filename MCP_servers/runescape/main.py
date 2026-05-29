@@ -1,8 +1,9 @@
-from datetime import datetime
 from fastmcp import FastMCP
+from prometheus_client import start_http_server, Counter, Histogram
 from pydantic import Field
 from sqlalchemy.exc import SQLAlchemyError
 from typing import Annotated, Optional
+import sys
 
 from core.logger import get_logger
 from db.errors import NotFoundError
@@ -16,6 +17,18 @@ from hiscore.tracked_hiscores import (
     get_user_historical_hs_item
 )
 
+TOOL_CALLS = Counter(
+    "mcp_tool_calls_total", "Total tool invocations", ["tool_name"]
+)
+
+TOOL_DURATION = Histogram(
+    "mcp_tool_duration_seconds", "Tool call duration in seconds", ["tool_name"]
+)
+
+TOOL_ERRORS = Counter(
+    "mcp_tool_errors_total", "Total tool errors", ["tool_name"]
+)
+
 mcp = FastMCP(
     name="RuneScape MCP")
 
@@ -23,34 +36,34 @@ log = get_logger()
 
 @mcp.tool(
     name="get_runescape_player_current_hiscore",
-    version="1.0.0",
+    version="1.0.1",
     meta={
         "author": "Toasted-ctrl"
     },
+    description=(
+        "Retrieves and returns the current hiscore listings for the specified RuneScape player. "
+        "Only use this tool when the user is asking for the hiscores or stats of a RuneScape player. "
+        "Do NOT use this tool if the user asks any other question. "
+        "Returns a dictionary of stats / hiscores related to the specified RuneScape player."
+    )
 )
 def get_current_hiscore(
     player_name: Annotated[str, Field(description="Name of the RuneScape player.")]
 ) -> dict:
-    """Retrieves and returns the current hiscore listings for the specified RuneScape player.
-    
-    Only use this tool when the user is asking for the hiscores or stats of a RuneScape player.
-    A specific player's name (player_name) must be specified.
+    fname = sys._getframe().f_code.co_name
+    TOOL_CALLS.labels(tool_name=fname).inc()
+    with TOOL_DURATION.labels(tool_name=fname).time():
+        try:
+            log.info(f"Args: player_name = '{player_name}'")
+            return get_player_hiscore(player_name=player_name)
 
-    Do NOT use this tool if the user asks any other question.
-
-    Do NOT provide any arguments besides the player_name.
-
-    Returns:
-    - A dictionary of stats / hiscores related to the specified RuneScape player."""
-    try:
-        log.info(f"Args: player_name = '{player_name}'")
-        return get_player_hiscore(player_name=player_name)
-    
-    except Exception as e:
-        log.error(str(e))
-        return {
-            "unexpected_error": "An unexpected error occurred. Check server logs for details."
-        }
+        except Exception as e:
+            TOOL_ERRORS.labels(tool_name=fname).inc()
+            log.error(str(e))
+            raise Exception("An unexpected error occurred. Check server logs for details.") from e
+            #return {
+                #"unexpected_error": "An unexpected error occurred. Check server logs for details."
+            #}
 
 @mcp.tool(
     name="get_runescape_grand_exchange_item",
@@ -251,9 +264,16 @@ def get_runescape_player_historical_hiscore_item(
         }
 
 if __name__ == "__main__":
+    
+    # NOTE: Starting the prometheus metrics server
+    start_http_server(
+        port=8989,
+        addr="0.0.0.0"
+    )
 
     mcp.run(
         transport="streamable-http",
         host="0.0.0.0",
         port=8000,
-        path="/mcp")
+        path="/mcp"
+    )
