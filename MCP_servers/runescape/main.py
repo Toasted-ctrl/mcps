@@ -3,7 +3,7 @@ from prometheus_client import start_http_server, Counter, Histogram
 from pydantic import Field
 from sqlalchemy.exc import SQLAlchemyError
 from typing import Annotated, Optional
-import sys
+import functools
 
 from core.logger import get_logger
 from db.errors import NotFoundError
@@ -29,10 +29,37 @@ TOOL_ERRORS = Counter(
     "mcp_tool_errors_total", "Total tool errors", ["tool_name"]
 )
 
+log = get_logger()
+
+def metrics_handler(func):
+    @functools.wraps(func)
+    def wrapper(*args, **kwargs):
+        fname = func.__name__
+        TOOL_CALLS.labels(tool_name=fname).inc()
+        with TOOL_DURATION.labels(tool_name=fname).time():
+            try:
+                log.info(f"Calling {fname} with args={args}, kwargs={kwargs}")
+                return func(*args, **kwargs)
+            except ValueError as e:
+                TOOL_ERRORS.labels(tool_name=fname).inc()
+                log.error(str(e))
+                raise Exception(str(e)) from e
+            except SQLAlchemyError as e:
+                TOOL_ERRORS.labels(tool_name=fname).inc()
+                log.error(e)
+                raise Exception("A database error occurred. Check server logs for details.") from e
+            except NotFoundError as e:
+                TOOL_ERRORS.labels(tool_name=fname).inc()
+                log.info(e)
+                raise Exception(str(e)) from e
+            except Exception as e:
+                TOOL_ERRORS.labels(tool_name=fname).inc()
+                log.error(str(e))
+                raise Exception("An unexpected error occured. Check server logs for details.") from e
+    return wrapper
+
 mcp = FastMCP(
     name="RuneScape MCP")
-
-log = get_logger()
 
 @mcp.tool(
     name="get_runescape_player_current_hiscore",
@@ -47,23 +74,12 @@ log = get_logger()
         "Returns a dictionary of stats / hiscores related to the specified RuneScape player."
     )
 )
+@metrics_handler
 def get_current_hiscore(
     player_name: Annotated[str, Field(description="Name of the RuneScape player.")]
 ) -> dict:
-    fname = sys._getframe().f_code.co_name
-    TOOL_CALLS.labels(tool_name=fname).inc()
-    with TOOL_DURATION.labels(tool_name=fname).time():
-        try:
-            log.info(f"Args: player_name = '{player_name}'")
-            return get_player_hiscore(player_name=player_name)
-
-        except Exception as e:
-            TOOL_ERRORS.labels(tool_name=fname).inc()
-            log.error(str(e))
-            raise Exception("An unexpected error occurred. Check server logs for details.") from e
-            #return {
-                #"unexpected_error": "An unexpected error occurred. Check server logs for details."
-            #}
+        log.info(f"Args: player_name = '{player_name}'")
+        return get_player_hiscore(player_name=player_name)
 
 @mcp.tool(
     name="get_runescape_grand_exchange_item",
