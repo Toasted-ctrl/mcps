@@ -195,12 +195,11 @@ def get_runescape_player_historical_hiscore_item(
     }
 
 if __name__ == "__main__":
-    log.info("Starting Prometheus server")
+    log.info("Starting Prometheus endpoint")
     start_http_server(
         port=8989,
         addr="0.0.0.0"
     )
-
     mcp.run(
         transport="streamable-http",
         host="0.0.0.0",
