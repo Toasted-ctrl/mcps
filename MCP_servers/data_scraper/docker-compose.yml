@@ -1,0 +1,12 @@
+services:
+  data_scraper:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: MCP_DataScraper
+    env_file:
+      - .env
+    ports:
+      - "10002:8000"  # MCP port
+      - "8787:8787"   # Prometheus port
+    restart: unless-stopped
