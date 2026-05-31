@@ -1,5 +1,6 @@
 from fastmcp import FastMCP
 from prometheus_client import start_http_server
+import sys
 
 from logger.logger import get_logger
 from prometheus.metrics_handler import metrics_handler
@@ -16,7 +17,7 @@ mcp = FastMCP(
 )
 @metrics_handler
 def add(num_1: int, num_2: int) -> dict[str, int]:
-    log.info(f"Calling 'add' with args: {num_1}, {num_2}")
+    log.info(f"Calling '{sys._getframe().f_code.co_name}' with args: {num_1}, {num_2}")
     return {
         "answer": num_1 + num_2
     }
