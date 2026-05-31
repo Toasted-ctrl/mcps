@@ -24,7 +24,7 @@ def metrics_handler(func):
         TOOL_CALLS.labels(tool_name=fname).inc()
         with TOOL_DURATION.labels(tool_name=fname).time():
             try:
-                log.info(f"Calling {fname} with args={args}, kwargs={kwargs}")
+                log.info(f"Calling '{fname}' with args={args}, kwargs={kwargs}")
                 return func(*args, **kwargs)
             except Exception as e:
                 TOOL_ERRORS.labels(tool_name=fname).inc()
