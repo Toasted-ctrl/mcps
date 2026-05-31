@@ -3,7 +3,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    container_name: MCP_DataScraper
+    container_name: MCP_Example
     env_file:
       - .env
     ports:

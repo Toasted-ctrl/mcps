@@ -1,8 +1,7 @@
-from fastmcp import FastMCP
-from prometheus_client import start_http_server, Counter, Histogram
+from prometheus_client import Counter, Histogram
 import functools
 
-from core.logger import get_logger
+from logger.logger import get_logger
 
 TOOL_CALLS = Counter(
     "mcp_tool_calls_total", "Total tool invocations", ["tool_name"]
@@ -32,22 +31,3 @@ def metrics_handler(func):
                 log.error(str(e))
                 raise Exception("An unexpected error occured. Check server logs for details.") from e
     return wrapper
-
-mcp = FastMCP(
-    name="Data Scraper MCP"
-)
-
-# TODO: Add base functions.
-
-if __name__ == "__main__":
-    log.info("Starting Prometheus endpoint")
-    start_http_server(
-        port=8787,
-        addr="0.0.0.0"
-    )
-    mcp.run(
-        transport="streamable-http",
-        host="0.0.0.0",
-        port=8000,
-        path="/mcp"
-    )
