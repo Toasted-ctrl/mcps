@@ -23,7 +23,7 @@ def add(num_1: int, num_2: int) -> dict[str, int]:
     }
 
 if __name__ == "__main__":
-    log.info("Starting Prometheus endpoint")
+    log.info("Starting Prometheus endpoint at port '8787'")
     start_http_server(
         port=8787,
         addr="0.0.0.0"
