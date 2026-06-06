@@ -1,7 +1,7 @@
 from dotenv import load_dotenv
 import os
 
-from logger.logger import get_logger
+from core.logger import get_logger
 
 log = get_logger()
 

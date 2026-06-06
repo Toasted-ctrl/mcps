@@ -3,8 +3,8 @@ from prometheus_client import start_http_server
 import sys
 
 from core.config import config
-from logger.logger import get_logger
-from prometheus.metrics_handler import metrics_handler
+from core.logger import get_logger
+from core.prometheus import metrics_handler
 
 # NOTE: Add @metrics_handler above every function, after @mcp.tool, to fetch performance data to expose on the prometheus endpoint.
 # NOTE: @metrics_handler also handles exceptions.
