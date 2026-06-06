@@ -21,7 +21,7 @@ mcp = FastMCP(
 )
 @metrics_handler
 def add(num_1: int, num_2: int) -> dict[str, int]:
-    log.info(f"Calling '{add.__name__}' with kwargs={locals()}")
+    log.info(f"Calling '{sys._getframe().f_code.co_name}' with kwargs={locals()}")
     return {
         "answer": num_1 + num_2
     }
