@@ -3,3 +3,4 @@ This directory contain an example set-up for rapid MCP development, including lo
 ```bash
 docker compose up
 ```
+Test
