@@ -2,17 +2,14 @@ FROM python:3.12-slim
 
 WORKDIR /app
 
-# Install shared deps first (layer caching)
-COPY requirements.txt /app/requirements.txt
-RUN pip install --no-cache-dir -r /app/requirements.txt
+# Copy only dependency metadata first (layer caching)
+COPY pyproject.toml /app/pyproject.toml
 
-# Copy shared library
+# Copy the actual package sources needed for install
 COPY shared/ /app/shared/
-
-# Copy this MCP's code
 COPY servers/example/ /app/servers/example/
 
-# Set Python path so `from shared.x import y` works
-ENV PYTHONPATH=/app
+# Install the project (reads deps from pyproject.toml)
+RUN pip install --no-cache-dir .
 
 CMD ["python", "-m", "servers.example.main"]
