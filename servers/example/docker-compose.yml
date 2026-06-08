@@ -4,8 +4,6 @@ services:
       context: ../../
       dockerfile: servers/example/Dockerfile
     container_name: example-mcp
-    environment:
-      - MCP_NAME=example-mcp
     env_file:
       - .env
     ports:
