@@ -1,0 +1,14 @@
+services:
+  example:
+    build:
+      context: ../../
+      dockerfile: servers/example/Dockerfile
+    container_name: example-mcp
+    environment:
+      - MCP_NAME=example-mcp
+    env_file:
+      - .env
+    ports:
+      - "10003:8000"
+      - "10004:9000"
+    restart: unless-stopped
