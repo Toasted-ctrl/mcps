@@ -1,7 +1,7 @@
 from prometheus_client import Counter, Histogram
 import functools
 
-from logger import get_logger
+from .logger import get_logger
 
 TOOL_CALLS = Counter(
     "mcp_tool_calls_total", "Total tool invocations", ["tool_name"]
