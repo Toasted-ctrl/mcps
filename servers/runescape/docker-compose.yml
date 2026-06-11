@@ -1,0 +1,12 @@
+services:
+  runescape:
+    build:
+      context: ../../
+      dockerfile: servers/runescape/Dockerfile
+    container_name: runescape-mcp
+    env_file:
+      - .env
+    ports:
+      - "10001:8000"
+      - "10002:9000"
+    restart: unless-stopped
