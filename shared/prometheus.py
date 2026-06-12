@@ -1,33 +1,44 @@
+from fastmcp.server.middleware import Middleware
 from prometheus_client import Counter, Histogram
-import functools
-
-from .logger import get_logger
+import time
 
 TOOL_CALLS = Counter(
-    "mcp_tool_calls_total", "Total tool invocations", ["tool_name"]
+    "mcp_tool_calls_total",
+    "Tool invocations",
+    ["tool", "status"],
 )
 
 TOOL_DURATION = Histogram(
-    "mcp_tool_duration_seconds", "Tool call duration in seconds", ["tool_name"]
+    "mcp_tool_duration_seconds",
+    "Tool execution time",
+    ["tool"],
 )
 
-TOOL_ERRORS = Counter(
-    "mcp_tool_errors_total", "Total tool errors", ["tool_name"]
-)
+class PrometheusMiddleware(Middleware):
+    async def on_call_tool(self, context, call_next):
+        tool = context.message.name
+        start = time.perf_counter()
+        try:
+            result = await call_next(context)
 
-log = get_logger()
+            TOOL_CALLS.labels(
+                tool=tool,
+                status="success",
+            ).inc()
 
-def metrics_handler(func):
-    @functools.wraps(func)
-    def wrapper(*args, **kwargs):
-        fname = func.__name__
-        TOOL_CALLS.labels(tool_name=fname).inc()
-        with TOOL_DURATION.labels(tool_name=fname).time():
-            try:
-                log.info(f"Calling '{fname}' with args={args}, kwargs={kwargs}")
-                return func(*args, **kwargs)
-            except Exception as e:
-                TOOL_ERRORS.labels(tool_name=fname).inc()
-                log.error(str(e))
-                raise Exception("An unexpected error occured. Check server logs for details.") from e
-    return wrapper
+            return result
+
+        except Exception:
+            TOOL_CALLS.labels(
+                tool=tool,
+                status="error",
+            ).inc()
+
+            raise
+
+        finally:
+            TOOL_DURATION.labels(
+                tool=tool,
+            ).observe(
+                time.perf_counter() - start
+            )
