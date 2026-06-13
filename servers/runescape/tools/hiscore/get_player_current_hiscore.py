@@ -1,4 +1,14 @@
-def unpack_hiscore_item(type: str, listing: list) -> dict:
+from pydantic import Field
+from typing import Annotated
+import requests
+
+from ...config import config
+from ...server import mcp
+
+def _unpack_hiscore_item(
+    type: str,
+    listing: list
+) -> dict:
 
     """Unpacks a hiscore item."""
 
@@ -15,7 +25,9 @@ def unpack_hiscore_item(type: str, listing: list) -> dict:
         item['exp_score'] = listing[1]
     return item
 
-def unpack_hiscore(input: str) -> dict[str, dict[str, int]]:
+def _unpack_hiscore(
+    input: str
+) -> dict[str, dict[str, int]]:
 
     """Unpacks the hiscore body of text returned from the RuneScape hiscore API."""
 
@@ -89,9 +101,33 @@ def unpack_hiscore(input: str) -> dict[str, dict[str, int]]:
     for idx, line in enumerate(listings):
         listing = line.split(',')
         if idx < 30:
-            hiscores[hiscore_items[idx]] = unpack_hiscore_item(type='skill', listing=listing)
+            hiscores[hiscore_items[idx]] = _unpack_hiscore_item(type='skill', listing=listing)
 
         elif idx > 29 and idx < 61:
-            hiscores[hiscore_items[idx]] = unpack_hiscore_item(type='activity', listing=listing)
+            hiscores[hiscore_items[idx]] = _unpack_hiscore_item(type='activity', listing=listing)
 
     return hiscores
+
+@mcp.tool(
+    name="get_player_current_hiscore",
+    version="1.0.2",
+    meta={
+        "author": "Toasted-ctrl"
+    },
+    description=(
+        "Retrieves and returns the current hiscore listings for the specified RuneScape player. "
+        "Only use this tool when the user is asking for the hiscores or stats of a RuneScape player. "
+        "Do NOT use this tool if the user asks any other question. "
+        "Returns a dictionary of stats / hiscores related to the specified RuneScape player."
+    )
+)
+def get_player_current_hiscore(
+    player_name: Annotated[str, Field(description="Name of the RuneScape player.")]
+) -> dict:
+    if not player_name:
+        raise ValueError("Player name must not be None")
+    url = config.RS_HS_LINK
+    params = {"player": player_name}
+    response = requests.get(url=url, params=params)
+    response.raise_for_status()
+    return _unpack_hiscore(input=str(response.text))

@@ -1,4 +1,0 @@
-fastmcp==3.4.2
-prometheus_client==0.25.0
-python-dotenv==1.2.2
-uvicorn==0.44.0
