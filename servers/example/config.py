@@ -8,8 +8,6 @@ load_dotenv(Path(__file__).parent / ".env")
 
 class MCPConfig(BaseConfig):
 
-    """MCP Config"""
-
     def __init__(self):
         super().__init__()
         log = get_logger(self.MCP_NAME)
