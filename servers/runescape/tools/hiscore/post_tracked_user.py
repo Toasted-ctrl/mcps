@@ -1,0 +1,50 @@
+from pydantic import Field
+from typing import Annotated
+
+from ...config import config
+from ...db.schemas import ProdTrackedUsers
+from ...server import mcp
+
+from shared.db import get_db_session
+
+@mcp.tool(
+    name="post_tracked_user",
+    version="0.1.1",
+    meta={
+        "author": "Toasted-ctrl"
+    },
+    description=(
+        "Adds a new user / username / player_name for which hiscores / stats / runemetrics profiles need to be tracked. "
+        "Only use this tool when the user is requesting to add tracking a player / user. "
+        "Returns the player_name if added successfully."
+    )
+)
+def post_tracked_user(
+    player_name: Annotated[str, Field(description="Name of the RuneScape player.")]
+) -> dict[str, str]:
+
+    """Processes new user to be tracked. Returns the username if added successfully."""
+
+    with get_db_session(db_url=config.DB_URL) as db:
+        tracked_player: ProdTrackedUsers = (
+            db.query(ProdTrackedUsers)
+            .filter(ProdTrackedUsers.player_name == player_name)
+            .scalar()
+        )
+        if not tracked_player:
+            new_tracked_player = ProdTrackedUsers(
+                is_active=True,
+                player_name=player_name
+            )
+            db.add(new_tracked_player)
+            db.commit()
+            return {
+                "tracking_enabled": tracked_player.player_name
+            }
+        if not tracked_player.is_active:
+            tracked_player.is_active = True
+            db.commit()
+            return {
+                "tracking_enabled": tracked_player.player_name
+            }
+        raise ValueError(f"'{player_name}' is already tracked")
