@@ -7,7 +7,7 @@ COPY pyproject.toml /app/pyproject.toml
 
 # Copy the actual package sources needed for install
 COPY shared/ /app/shared/
-COPY servers/runescape/ /app/runescape/example/
+COPY servers/runescape/ /app/servers/runescape/
 
 # Install the project (reads deps from pyproject.toml)
 RUN pip install --no-cache-dir .
