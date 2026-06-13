@@ -24,6 +24,7 @@ After, to launch, run:
 uv sync
 uv run python -m servers.example.main
 ```
+---
 ### Docker Compose
 navigate to the subdirectory of an MCP from the root directory, for example:
 ```bash
