@@ -7,7 +7,7 @@ from .config import config
 from shared.prometheus import PrometheusMiddleware
 
 mcp = FastMCP(
-    name=config.NAME
+    name=config.MCP_NAME
 )
 
 mcp.add_middleware(LoggingMiddleware(
