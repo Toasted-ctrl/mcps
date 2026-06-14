@@ -15,6 +15,14 @@ TOOL_DURATION = Histogram(
 )
 
 class PrometheusMiddleware(Middleware):
+
+    """
+    Sits right before the tool call. Will log metrics for Prometheus such as:
+    
+    - Number of tool calls (errors and successful calls).
+    - Duration of the tool calls.
+    """
+
     async def on_call_tool(self, context, call_next):
         tool = context.message.name
         start = time.perf_counter()
