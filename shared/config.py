@@ -6,7 +6,7 @@ from .logger import get_logger
 class BaseConfig:
 
     """Base configuration class which import the minimum environment variables required to run the MCP.
-    To add additional required variables, just use BaseConfig.REQUIRED_VARS + []"""
+    To add additional required variables, just use REQUIRED_VARS = BaseConfig.REQUIRED_VARS + ADDITIONAL_VARS: list"""
 
     REQUIRED_VARS = [
         "PROMETHEUS_PORT",

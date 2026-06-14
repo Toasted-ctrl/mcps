@@ -1,12 +1,14 @@
 from dotenv import load_dotenv
+from pathlib import Path
 import os
-import sys
 
-from shared.logger import get_logger
+from shared.config import BaseConfig
 
-class MCPConfig:
+load_dotenv(Path(__file__).parent / ".env")
 
-    REQUIRED_VARS = [
+class MCPConfig(BaseConfig):
+
+    ADDITIONAL_VARS = [
         "PROD_DB_DIALECT",
         "PROD_DB_DRIVER",
         "PROD_DB_PORT",
@@ -15,20 +17,13 @@ class MCPConfig:
         "RS_DB_USER",
         "RS_DB_PASSWORD",
         "RUNESCAPE_GE_ITEM_ID",
-        "RUNESCAPE_HISCORE_URL",
-        "PROMETHEUS_PORT",
-        "MCP_PORT",
-        "MCP_NAME"
+        "RUNESCAPE_HISCORE_URL"
     ]
 
-    def __init__(self):
-        load_dotenv()
-        missing = [var for var in self.REQUIRED_VARS if not os.getenv(var)]
-        if missing:
-            sys.exit(f"Missing environment variables: {', '.join(missing)}")
+    REQUIRED_VARS = BaseConfig.REQUIRED_VARS + ADDITIONAL_VARS
 
-        log = get_logger(name=os.getenv("MCP_NAME"))
-        log.info("Setting up config")
+    def __init__(self):
+        super().__init__()
 
         self.DB_DIALECT: str = os.getenv("PROD_DB_DIALECT")
         self.DB_DRIVER: str = os.getenv("PROD_DB_DRIVER")
@@ -40,13 +35,6 @@ class MCPConfig:
 
         self.RS_GE_LINK: str = os.getenv("RUNESCAPE_GE_ITEM_ID")
         self.RS_HS_LINK: str = os.getenv("RUNESCAPE_HISCORE_URL")
-
-        self.MCP_NAME: str = os.getenv("MCP_NAME")
-
-        self.PROMETHEUS_PORT: str = int(os.getenv("PROMETHEUS_PORT"))
-        self.MCP_PORT: int = int(os.getenv("MCP_PORT"))
-
-        log.info("Finished setting up config")
 
     @property
     def DB_URL(self) -> str:
