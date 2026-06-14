@@ -1,10 +1,7 @@
-from dotenv import load_dotenv
 from pathlib import Path
 import os
 
 from shared.config import BaseConfig
-
-load_dotenv(Path(__file__).parent / ".env")
 
 class MCPConfig(BaseConfig):
 
@@ -23,7 +20,7 @@ class MCPConfig(BaseConfig):
     REQUIRED_VARS = BaseConfig.REQUIRED_VARS + ADDITIONAL_VARS
 
     def __init__(self):
-        super().__init__()
+        super().__init__(env_path=Path(__file__).parent / ".env")
 
         self.DB_DIALECT: str = os.getenv("PROD_DB_DIALECT")
         self.DB_DRIVER: str = os.getenv("PROD_DB_DRIVER")

@@ -1,3 +1,5 @@
+from dotenv import load_dotenv
+from pathlib import Path
 import os
 import sys
 
@@ -14,7 +16,9 @@ class BaseConfig:
         "MCP_PORT"
     ]
 
-    def __init__(self):
+    def __init__(self, env_path: Path = None):
+        if env_path:
+            load_dotenv(env_path)
         missing = [var for var in self.REQUIRED_VARS if not os.getenv(var)]
         if missing:
             sys.exit(f"Missing environment variables: {', '.join(missing)}")
