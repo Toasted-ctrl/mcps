@@ -2,10 +2,10 @@
 Hello! This is a general repository with some MCP servers I created. Over time I'll create more MCP servers and upload them here. Feel free to use/copy them!\n
 Additionally, this repo contains an "example server", which should assist in rapidly developing a new MCP server from scratch. The example server includes:
 - Logging
-- Error handling
+- Error handling & sanitization
 - Prometheus tracking on its own port
-## Running an MCP server
-### Locally
+# Running an MCP server
+## Locally
 Navigate to the subdirectory of an MCP from the root directory, for example:
 ```bash
 cd servers/example
@@ -24,8 +24,7 @@ After, to launch, run:
 uv sync
 uv run python -m servers.example.main
 ```
----
-### Docker Compose
+## Docker Compose
 navigate to the subdirectory of an MCP from the root directory, for example:
 ```bash
 cd servers/example
