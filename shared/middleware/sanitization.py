@@ -40,5 +40,16 @@ class SanitizedErrorMiddleware(Middleware):
             return await call_next(request)
         except self.safe_exceptions:
             raise
-        except Exception:
+        except Exception as exc:
+            if self._is_safe_cause(exc):
+                raise
             raise RuntimeError(self.generic_message) from None
+        
+    def _is_safe_cause(self, exc: Exception) -> bool:
+        """Walk the exception chain looking for a safe root cause."""
+        cause = exc.__cause__ or exc.__context__
+        while cause is not None:
+            if isinstance(cause, self.safe_exceptions):
+                return True
+            cause = cause.__cause__ or cause.__context__
+        return False
