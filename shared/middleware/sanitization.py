@@ -46,7 +46,13 @@ class SanitizedErrorMiddleware(Middleware):
             raise RuntimeError(self.generic_message) from None
         
     def _is_safe_cause(self, exc: Exception) -> bool:
+        
         """Walk the exception chain looking for a safe root cause."""
+        
+        # NOTE: This step is required, as FastMCP wraps errors in ToolError.
+        # We'd never find the true error, and allowing ToolError as safe would just mean we're passing
+        # through every error again.
+
         cause = exc.__cause__ or exc.__context__
         while cause is not None:
             if isinstance(cause, self.safe_exceptions):
