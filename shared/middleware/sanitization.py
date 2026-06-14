@@ -1,14 +1,13 @@
 from fastmcp.server.middleware import Middleware
 
-class UserFacingError(Exception):
-    pass
+from ..errors import NotFoundError
 
 SAFE_EXCEPTIONS: tuple[type[Exception], ...] = (
-    UserFacingError,
     ValueError,
     TypeError,
     KeyError,
-    NotImplementedError
+    NotImplementedError,
+    NotFoundError
 )
 
 GENERIC_MESSAGE = "An internal error occured. Please try again later."
