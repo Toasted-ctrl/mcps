@@ -2,6 +2,7 @@ from prometheus_client import start_http_server
 
 from .config import config
 from .server import mcp
+from .tools.example_tool import sum_integers
 
 from shared.logger import get_logger
 
