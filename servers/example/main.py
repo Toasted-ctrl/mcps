@@ -2,6 +2,7 @@ from prometheus_client import start_http_server
 
 from .config import config
 from .server import mcp
+from .tools.files import list_files
 from .tools.sum_integers import sum_integers
 from .tools.iterate_list_dicts import iterate_list_dicts
 
