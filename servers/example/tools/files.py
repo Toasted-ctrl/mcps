@@ -15,6 +15,9 @@ from ..server import mcp
 def list_files(
     directory: Annotated[str, Field(description="Directory path")] = "."
 ) -> dict[str, list[dict]]:
+    
+    # NOTE: Stat module originates from Unix - stat -> get file status.
+
     return {
         "result": [
             {"name": str(f), "size": f"{f.stat().st_size} bytes"}
