@@ -11,14 +11,14 @@ from shared.logger import get_logger
 log = get_logger(name=config.MCP_NAME)
 
 @mcp.tool(
-    name="get_table_example",
+    name="get_table_example_data",
     version="0.0.1",
-    description="Retrieves data from the first 5 rows from a table.",
+    description="Retrieves example data from the first 5 rows from a table.",
     meta={
         "author": "Toasted-ctrl"
     }
 )
-def get_table_example(
+def get_table_example_data(
     database: Annotated[str, Field(description="Database name")],
     table: Annotated[str, Field(description="Table name")]
 ) -> dict:

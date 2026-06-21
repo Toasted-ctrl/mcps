@@ -10,14 +10,17 @@ from shared.logger import get_logger
 log = get_logger(name=config.MCP_NAME)
 
 @mcp.tool(
-    name="get_table_details",
+    name="get_table_schema_details",
     version="0.0.1",
-    description="Retrieves table information for a specific table, i.e: column name, type, primary key, nullable, etc.",
+    description=(
+        "Retrieves table schema information for a specific table, i.e: column name, type, primary key, nullable, etc. "
+        "Also retrieves the number of records for the table."
+    ),
     meta={
         "author": "Toasted-ctrl"
     }
 )
-def get_table_details(
+def get_table_schema_details(
     database: Annotated[str, Field(description="Name of database")],
     table: Annotated[str, Field(description="Name of table")]
 ) -> dict:
