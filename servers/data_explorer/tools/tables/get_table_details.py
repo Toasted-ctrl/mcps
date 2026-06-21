@@ -1,5 +1,5 @@
 from pydantic import Field
-from sqlalchemy import create_engine, MetaData
+from sqlalchemy import create_engine, MetaData, select, func
 from typing import Annotated
 
 from ...config import config
@@ -34,8 +34,13 @@ def get_table_details(
         tables = metadata.tables.items()
         for name, obj in tables:
             if name == table:
+                with engine.connect() as conn:
+                    record_count = conn.execute(
+                        select(func.count()).select_from(obj)
+                    ).scalar()
                 return {
                     "database": database,
+                    "records": record_count,
                     "table": table,
                     "table_schema": [
                         {
