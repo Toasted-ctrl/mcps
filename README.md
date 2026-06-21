@@ -4,6 +4,8 @@ Additionally, this repo contains an "example server", which should assist in rap
 - Logging
 - Error handling & sanitization
 - Prometheus tracking on its own port
+# To Do's:
+- Have to look into an auth layer, especially for the data explorer.
 # Running an MCP server
 ## Locally
 Navigate to the subdirectory of an MCP from the root directory, for example:
