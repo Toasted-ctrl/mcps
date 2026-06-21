@@ -18,13 +18,13 @@ log = get_logger(name=config.MCP_NAME)
     }
 )
 def get_table_names(
-    database_name: Annotated[str, Field(description="Name of database to inspect")]
+    database: Annotated[str, Field(description="Name of database to inspect")]
 ) -> dict:
-    if not database_name:
+    if not database:
         raise ValueError("Database must be defined")
-    if not database_name in config.DB_DATABASES:
+    if not database in config.DB_DATABASES:
         raise ValueError("Nonexistant database")
-    db_url = config.db_url(db_database=database_name)
+    db_url = config.db_url(db_database=database)
     try:
         engine = create_engine(url=db_url)
         log.debug("Created engine")
@@ -32,7 +32,7 @@ def get_table_names(
         metadata.reflect(bind=engine)
         tables = metadata.tables.keys()
         return {
-            "database": database_name,
+            "database": database,
             "tables": list(tables)
         }
     finally:
