@@ -12,7 +12,7 @@ log = get_logger(name=config.MCP_NAME)
 @mcp.tool(
     name="get_table_details",
     version="0.0.1",
-    description="Retrieves table information for a specific table.",
+    description="Retrieves table information for a specific table, i.e: column name, type, primary key, nullable, etc.",
     meta={
         "author": "Toasted-ctrl"
     }
