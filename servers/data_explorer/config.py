@@ -13,6 +13,8 @@ class MCPConfig(BaseConfig):
         "DB_DIALECT",
         "DB_DRIVER",
         "DB_PORT",
+        "DIA_URL_BASE",
+        "DIA_URL_SOURCES"
     ]
 
     REQUIRED_VARS = BaseConfig.REQUIRED_VARS + ADDITIONAL_VARS
@@ -27,6 +29,8 @@ class MCPConfig(BaseConfig):
         self.DB_DRIVER: str = os.getenv("DB_DRIVER")
         self.DB_PORT: int = int(os.getenv("DB_PORT"))
 
+        self.DIA_URL_BASE: str = os.getenv("DIA_URL_BASE")
+        self.DIA_URL_SOURCES: str = os.getenv("DIA_URL_SOURCES")
 
     def db_url(self, db_database: str) -> str:
         
