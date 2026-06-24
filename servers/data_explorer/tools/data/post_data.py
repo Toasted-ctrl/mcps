@@ -5,6 +5,10 @@ import requests
 from ...config import config
 from ...server import mcp
 
+from shared.logger import get_logger
+
+log = get_logger(name=config.MCP_NAME)
+
 class Source(BaseModel):
     description: str = Field(description="High level description of the source")
     base_url: str = Field(description="Base URL of the source. Example: http://randomsite.com")
@@ -25,8 +29,13 @@ class Source(BaseModel):
 def post_data_ingest_sources(
     data: Annotated[Source, Field(description="The source object to be added to the ingest_sources table.")]
 ) -> dict:
-    
-    # TODO: Complete functionality to post a new source through DIA.
-    # NOTE: DIA required as it already handles source hashing and verification of new sources.
-    
-    pass
+    url = config.DIA_URL_BASE + config.DIA_URL_SOURCES
+    log.debug(f"URL: {url}")
+    response = requests.post(url=url, json=data.model_dump())
+    response.raise_for_status()
+    return {
+        "new_source": data
+    }
+
+    # TODO: Rework to not just test, but add proper headers etc.
+    # TODO: Errors out, need to debug. Something with the url is blocking.
