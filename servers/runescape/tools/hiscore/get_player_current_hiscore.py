@@ -130,4 +130,7 @@ def get_player_current_hiscore(
     params = {"player": player_name}
     response = requests.get(url=url, params=params)
     response.raise_for_status()
-    return _unpack_hiscore(input=str(response.text))
+    return {
+        "player_name": player_name,
+        "player_hiscores": _unpack_hiscore(input=str(response.text))
+    }

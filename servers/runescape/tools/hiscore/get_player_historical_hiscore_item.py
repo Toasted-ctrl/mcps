@@ -75,4 +75,8 @@ def get_player_historical_hiscore_item(
         )
         if query is None:
             raise NotFoundError(f"No historical records found for '{player_name}' from {request_date}")
-        return query._asdict()
+        
+        return {
+            "player_name": player_name,
+            "player_hiscore_item": query._asdict()
+        }
