@@ -6,14 +6,14 @@ from shared.config import BaseConfig
 class MCPConfig(BaseConfig):
 
     ADDITIONAL_VARS = [
-        "PROD_DB_DIALECT",
-        "PROD_DB_DRIVER",
-        "PROD_DB_PORT",
-        "PROD_DB_HOSTNAME",
-        "PROD_DB_DATABASE",
-        "RS_DB_USER",
-        "RS_DB_PASSWORD",
-        "RUNESCAPE_GE_ITEM_ID",
+        "PG_DIALECT",
+        "PG_DRIVER",
+        "PG_PORT",
+        "PG_HOSTNAME",
+        "PG_DATABASE",
+        "PG_USER",
+        "PG_PASSWORD",
+        "RUNESCAPE_GE_ITEM_ID_URL",
         "RUNESCAPE_HISCORE_URL"
     ]
 
@@ -22,15 +22,15 @@ class MCPConfig(BaseConfig):
     def __init__(self):
         super().__init__(env_path=Path(__file__).parent / ".env")
 
-        self.DB_DIALECT: str = os.getenv("PROD_DB_DIALECT")
-        self.DB_DRIVER: str = os.getenv("PROD_DB_DRIVER")
-        self.DB_PORT: str = os.getenv("PROD_DB_PORT")
-        self.DB_HOSTNAME: str = os.getenv("PROD_DB_HOSTNAME")
-        self.DB_DATABASE: str = os.getenv("PROD_DB_DATABASE")
-        self.DB_USERNAME: str = os.getenv("RS_DB_USER")
-        self.DB_PASSWORD: str = os.getenv("RS_DB_PASSWORD")
+        self.DB_DIALECT: str = os.getenv("PG_DIALECT")
+        self.DB_DRIVER: str = os.getenv("PG_DRIVER")
+        self.DB_PORT: str = os.getenv("PG_PORT")
+        self.DB_HOSTNAME: str = os.getenv("PG_HOSTNAME")
+        self.DB_DATABASE: str = os.getenv("PG_DATABASE")
+        self.DB_USERNAME: str = os.getenv("PG_USER")
+        self.DB_PASSWORD: str = os.getenv("PG_PASSWORD")
 
-        self.RS_GE_LINK: str = os.getenv("RUNESCAPE_GE_ITEM_ID")
+        self.RS_GE_LINK: str = os.getenv("RUNESCAPE_GE_ITEM_ID_URL")
         self.RS_HS_LINK: str = os.getenv("RUNESCAPE_HISCORE_URL")
 
     @property
