@@ -1,0 +1,60 @@
+# ---- Version Control ----
+.git
+.gitignore
+
+# ---- Dependencies ----
+node_modules
+vendor
+
+# ---- Cache ----
+__pycache__
+.pytest_cache
+.uv_cache
+
+# ---- Environment & Secrets ----
+.env
+.env.*
+*.pem
+*.key
+.venv
+**/.env
+**/.env.*
+
+# ---- IDE / Editor Files ----
+.vscode
+.idea
+*.swp
+*.swo
+
+# ---- K8s files ----
+k8s
+**/k8s
+
+# ---- OS Files ----
+.DS_Store
+Thumbs.db
+
+# ---- Docker Files ----
+docker-compose*.yml
+Dockerfile*
+.dockerignore
+
+# ---- Build & Output ----
+dist
+build
+*.log
+coverage
+build.sh
+
+# ---- Documentation ----
+README.md
+SECURITY.md
+SETUP.md
+LICENSE
+docs
+
+# ---- Tests ----
+tests
+test
+*.test.*
+*.spec.*
