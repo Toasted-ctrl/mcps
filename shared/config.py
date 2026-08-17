@@ -13,7 +13,8 @@ class BaseConfig:
     REQUIRED_VARS = [
         "PROMETHEUS_PORT",
         "MCP_NAME",
-        "MCP_PORT"
+        "MCP_PORT",
+        "APP_VERSION"
     ]
 
     def __init__(self, env_path: Path = None):

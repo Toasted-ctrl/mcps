@@ -4,11 +4,12 @@ from typing import Annotated, Optional
 import uuid
 
 from ...config import config
-from ...db.schemas import ProdTrackedUsers, StageHiscores_1
+from ...db.schemas import TrackedUsersT, StagingHiscoresT
 from ...server import mcp
 
 from shared.db import get_db_session
 from shared.errors import NotFoundError
+
 
 @mcp.tool(
     name="get_player_historical_hiscore_item",
@@ -49,27 +50,27 @@ def get_player_historical_hiscore_item(
     
     with get_db_session(db_url=config.DB_URL) as db:
         player_id: uuid.UUID = (
-            db.query(ProdTrackedUsers.id)
-            .filter(ProdTrackedUsers.player_name == username)
+            db.query(TrackedUsersT.id)
+            .filter(TrackedUsersT.player_name == username)
             .scalar()
         )
         if player_id is None:
             raise NotFoundError(f"No player found with name '{player_name}'")
         query = (
             db.query(
-                StageHiscores_1.name,
-                StageHiscores_1.ingest_date,
-                StageHiscores_1.rank,
-                StageHiscores_1.level,
-                StageHiscores_1.type,
-                StageHiscores_1.points)
+                StagingHiscoresT.name,
+                StagingHiscoresT.ingested_date,
+                StagingHiscoresT.rank,
+                StagingHiscoresT.level,
+                StagingHiscoresT.is_skill,
+                StagingHiscoresT.progression_points)
             .filter(
-                StageHiscores_1.source_id == player_id,
-                StageHiscores_1.name == skill_or_activity,
-                StageHiscores_1.ingest_date >= request_date
+                StagingHiscoresT.id == player_id,
+                StagingHiscoresT.name == skill_or_activity,
+                StagingHiscoresT.ingested_date >= request_date
             )
             .order_by(
-                StageHiscores_1.ingest_date.asc()
+                StagingHiscoresT.ingested_date.asc()
             )
             .first()
         )

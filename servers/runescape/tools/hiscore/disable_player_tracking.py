@@ -2,7 +2,7 @@ from pydantic import Field
 from typing import Annotated
 
 from ...config import config
-from ...db.schemas import ProdTrackedUsers
+from ...db.schemas import TrackedUsersT
 from ...server import mcp
 
 from shared.db import get_db_session
@@ -30,17 +30,17 @@ def disable_player_tracking(
     Return ths username if updates successfully."""
 
     with get_db_session(db_url=config.DB_URL) as db:
-        tracked_user: ProdTrackedUsers = (
-            db.query(ProdTrackedUsers)
+        tp: TrackedUsersT = (
+            db.query(TrackedUsersT)
             .filter(
-                ProdTrackedUsers.player_name == player_name,
-                ProdTrackedUsers.is_active.is_(True))
+                TrackedUsersT.player_name == player_name,
+                TrackedUsersT.is_tracked.is_(True))
             .one_or_none()
         )
-        if not tracked_user:
+        if not tp:
             raise NotFoundError(f"No tracking active for '{player_name}'")
-        tracked_user.is_active = False
+        tp.is_tracked = False
         db.commit()
         return {
-            "disabled_tracking": tracked_user.player_name
+            "disabled_tracking": tp.player_name
         }

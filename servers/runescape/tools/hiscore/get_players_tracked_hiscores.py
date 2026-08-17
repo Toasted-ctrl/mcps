@@ -1,9 +1,10 @@
 from ...config import config
-from ...db.schemas import ProdTrackedUsers
+from ...db.schemas import TrackedUsersT
 from ...server import mcp
 
 from shared.db import get_db_session
 from shared.errors import NotFoundError
+
 
 @mcp.tool(
     name="get_players_tracked_hiscores",
@@ -20,8 +21,8 @@ from shared.errors import NotFoundError
 def get_players_tracked_hiscores() -> dict:
     with get_db_session(db_url=config.DB_URL) as db:
         query = (
-            db.query(ProdTrackedUsers.player_name)
-            .filter(ProdTrackedUsers.is_active.is_(True))
+            db.query(TrackedUsersT.player_name)
+            .filter(TrackedUsersT.is_tracked.is_(True))
             .all()
         )
         if not query:

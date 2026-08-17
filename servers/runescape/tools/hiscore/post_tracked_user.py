@@ -2,10 +2,11 @@ from pydantic import Field
 from typing import Annotated
 
 from ...config import config
-from ...db.schemas import ProdTrackedUsers
+from ...db.schemas import TrackedUsersT
 from ...server import mcp
 
 from shared.db import get_db_session
+
 
 @mcp.tool(
     name="post_tracked_user",
@@ -26,25 +27,25 @@ def post_tracked_user(
     """Processes new user to be tracked. Returns the username if added successfully."""
 
     with get_db_session(db_url=config.DB_URL) as db:
-        tracked_player: ProdTrackedUsers = (
-            db.query(ProdTrackedUsers)
-            .filter(ProdTrackedUsers.player_name == player_name)
+        tp: TrackedUsersT = (
+            db.query(TrackedUsersT)
+            .filter(TrackedUsersT.player_name == player_name)
             .scalar()
         )
-        if not tracked_player:
-            new_tracked_player = ProdTrackedUsers(
-                is_active=True,
+        if not tp:
+            ntp = TrackedUsersT(
+                is_tracked=True,
                 player_name=player_name
             )
-            db.add(new_tracked_player)
+            db.add(ntp)
             db.commit()
             return {
-                "tracking_enabled": tracked_player.player_name
+                "tracking_enabled": ntp.player_name
             }
-        if not tracked_player.is_active:
-            tracked_player.is_active = True
+        if not tp.is_tracked:
+            tp.is_tracked = True
             db.commit()
             return {
-                "tracking_enabled": tracked_player.player_name
+                "tracking_enabled": tp.player_name
             }
         raise ValueError(f"'{player_name}' is already tracked")
