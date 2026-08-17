@@ -7,3 +7,7 @@ __pycache__/
 
 # UV
 uv.lock
+
+# k8s files
+secrets.yaml
+deployment.yaml
