@@ -35,7 +35,7 @@ spec:
 
       containers:
         - name: mcp-runescape
-          image: "YOUR LOCAL REGISTRY/mcp-runescape:0.0.11"
+          image: "storage01:5000/mcp-runescape:0.0.11"
           imagePullPolicy: Always
 
           ports:

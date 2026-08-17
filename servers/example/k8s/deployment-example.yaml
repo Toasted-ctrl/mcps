@@ -35,7 +35,7 @@ spec:
 
       containers:
         - name: mcp-example
-          image: "YOUR LOCAL REGISTRY/mcp-example:0.0.1"
+          image: "storage01:5000/mcp-example:0.0.1"
           imagePullPolicy: Always
 
           ports:
