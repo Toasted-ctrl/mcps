@@ -1,106 +1,105 @@
+from datetime import datetime
+from sqlalchemy import String, func, DateTime, text, UUID, Boolean, Integer, BigInteger, TIMESTAMP
+from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
 import uuid
 
-from datetime import datetime
-from sqlalchemy import String, func, DateTime, text, UUID, Boolean, Integer, BigInteger
-from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
 
 class Base(DeclarativeBase):
     pass
 
-class ProdTrackedUsers(Base):
-    __tablename__ = "prod_tracked_users"
+
+class TrackedUsersT(Base):
+    __tablename__ = 'tracked_users'
 
     id: Mapped[uuid.UUID] = mapped_column(
         UUID,
         primary_key=True,
         server_default=text("gen_random_uuid()")
     )
-    
+
     player_name: Mapped[str] = mapped_column(
-        String(50),
-        nullable=False,
-        unique=True
+        String(255),
+        unique=True,
+        nullable=False
     )
-    
+
     inserted_date: Mapped[datetime] = mapped_column(
-        DateTime(timezone=False),
+        TIMESTAMP(timezone=True),
         nullable=False,
-        server_default=func.now()
+        server_default=text("now()")
     )
-    
+
     inserted_by: Mapped[str] = mapped_column(
-        String(50),
+        String(255),
         nullable=False,
         server_default=text("current_user")
     )
 
-    is_active: Mapped[bool] = mapped_column(
+    is_tracked: Mapped[bool] = mapped_column(
+        Boolean,
+        nullable=False,
+        server_default=text("true")
+    )
+
+
+class StagingHiscoresT(Base):
+    __tablename__ = 'staging_hiscores'
+
+    id: Mapped[uuid.UUID] = mapped_column(
+        UUID,
+        primary_key=True,
+        server_default=text("gen_random_uuid()")
+    )
+
+    user_id: Mapped[uuid.UUID] = mapped_column(
+        UUID,
+        nullable=False
+    )
+
+    ingested_date: Mapped[datetime] = mapped_column(
+        TIMESTAMP(timezone=True),
+        nullable=False
+    )
+
+    inserted_date: Mapped[datetime] = mapped_column(
+        TIMESTAMP(timezone=True),
+        nullable=False,
+        server_default=text("now()")
+    )
+
+    inserted_by: Mapped[str] = mapped_column(
+        String(255),
+        nullable=False,
+        server_default=text("current_user")
+    )
+
+    is_skill: Mapped[bool] = mapped_column(
         Boolean,
         nullable=False
     )
 
-class StageHiscores_1(Base):
-    __tablename__ = "stg_hiscores_1"
-
-    id: Mapped[uuid.UUID] = mapped_column(
-        UUID,
-        primary_key=True,
-        server_default=text("gen_random_uuid()")
-    )
-
-    ingest_item_id: Mapped[uuid.UUID] = mapped_column(
-        UUID,
+    name: Mapped[str] = mapped_column(
+        String(255),
         nullable=False
     )
 
-    ingest_source_id: Mapped[uuid.UUID] = mapped_column(
-        UUID,
-        nullable=False
-    )
-
-    ingest_date: Mapped[datetime] = mapped_column(
-        DateTime(timezone=False),
-        nullable=False
-    )
-
-    source_id: Mapped[uuid.UUID] = mapped_column(
-        UUID,
-        nullable=False
-    )
-
-    type: Mapped[str] = mapped_column(
+    progression: Mapped[str] = mapped_column(
         String(20),
         nullable=False
     )
 
-    inserted_date: Mapped[datetime] = mapped_column(
-        DateTime(timezone=False),
-        nullable=False,
-        server_default=func.now()
-    )
-
-    inserted_by: Mapped[str] = mapped_column(
-        String(40),
-        nullable=False,
-        server_default=text("current_user")
-    )
-
-    name: Mapped[str] = mapped_column(
-        String(50),
+    # We need BIGINT here as max total XP may exceed the 2.1B threshold.
+    progression_points: Mapped[int] = mapped_column(
+        BigInteger,
         nullable=False
     )
 
-    rank: Mapped[int] = mapped_column(
-        Integer,
-        nullable=False
-    )
-
-    level: Mapped[int | None] = mapped_column(
+    level: Mapped[int] = mapped_column(
         Integer,
         nullable=True
     )
 
-    points: Mapped[int] = mapped_column(
-        BigInteger,
+    rank: Mapped[int] = mapped_column(
+        Integer,
         nullable=False
     )
