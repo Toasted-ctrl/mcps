@@ -1,0 +1,18 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: mcp-runescape-ingress
+  namespace: mcp-runescape
+spec:
+  ingressClassName: nginx
+  rules:
+    - host: mcp-runescape.k8s.internal
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: mcp-runescape-service
+                port:
+                  number: 80

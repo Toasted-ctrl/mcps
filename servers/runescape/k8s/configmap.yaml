@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: mcp-runescape-config
+  namespace: mcp-runescape
+data:
+  APP_ENV: "production"
+  LOG_LEVEL: "info"
+  PG_PORT: "5432"
+  PG_DIALECT: "postgresql"
+  PG_DRIVER: "psycopg2"
+  MCP_PORT: "8000"
+  MCP_NAME: "RuneScape MCP"
+  PROMETHEUS_PORT: "9000"
+  RUNESCAPE_HISCORE_URL: "https://secure.runescape.com/m=hiscore/index_lite.ws"
+  RUNESCAPE_GE_ITEM_ID_URL: "https://secure.runescape.com/m=itemdb_rs/api/catalogue/detail.json"
