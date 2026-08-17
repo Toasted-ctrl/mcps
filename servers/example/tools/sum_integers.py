@@ -5,6 +5,7 @@ from ..server import mcp
 
 # NOTE: Example tool where one iterates through and sums a list of integers.
 
+
 @mcp.tool(
     name="sum_integers",
     version="1.0.0",
@@ -16,7 +17,7 @@ from ..server import mcp
 def sum_integers(
     integers: Annotated[list[int], Field(description="List of integers")],
 ) -> dict:
-    if len(integers) == 1:
+    if len(integers) < 2:
         raise ValueError("At least two integers must be provided.")
     return {
         "result": sum(integers)
