@@ -2,6 +2,9 @@ FROM python:3.12-slim
 
 WORKDIR /app
 
+ARG VERSION
+ENV APP_VERSION=${VERSION}
+
 # Copy only dependency metadata first (layer caching)
 COPY pyproject.toml /app/pyproject.toml
 
