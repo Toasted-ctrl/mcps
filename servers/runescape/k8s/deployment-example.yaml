@@ -6,6 +6,13 @@ metadata:
   labels:
     app: mcp-runescape
 
+    # Below Keel section is to automate pulling the new image if a new semver version is detected.
+    # Remove entirely if not needed.
+    keel.sh/policy: major
+    keel.sh/trigger: poll
+  annotations:
+    keel.sh/pollSchedule: "@every 1m"
+
 spec:
   replicas: 1
   selector:
