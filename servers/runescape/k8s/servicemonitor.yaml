@@ -1,0 +1,15 @@
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: mcp-runescape
+  namespace: mcp-runescape
+  labels:
+    release: kube-prometheus-stack
+spec:
+  selector:
+    matchLabels:
+      app: mcp-runescape
+  endpoints:
+    - port: metrics
+      interval: 15s
+      path: /metrics

@@ -3,11 +3,18 @@ kind: Service
 metadata:
   name: mcp-runescape-service
   namespace: mcp-runescape
+  labels:
+    app: mcp-runescape
 spec:
   selector:
     app: mcp-runescape
   ports:
-    - protocol: TCP
+    - name: http
+      protocol: TCP
       port: 80
       targetPort: 8000
+    - name: metrics
+      protocol: TCP
+      port: 9090
+      targetPort: 9090
   type: ClusterIP

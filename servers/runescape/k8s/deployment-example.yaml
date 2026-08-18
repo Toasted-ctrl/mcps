@@ -49,6 +49,9 @@ spec:
             - name: http
               containerPort: 8000
               protocol: TCP
+            - name: metrics
+              containerPort: 9090
+              protocol: TCP
 
           envFrom:
             - configMapRef:
