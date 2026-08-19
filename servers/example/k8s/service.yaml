@@ -3,11 +3,18 @@ kind: Service
 metadata:
   name: mcp-example-service
   namespace: mcp-example
+  labels:
+    app: mcp-example
 spec:
   selector:
     app: mcp-example
   ports:
-    - protocol: TCP
+    - name: http
+      protocol: TCP
       port: 80
       targetPort: 8000
+    - name: metrics
+      protocol: TCP
+      port: 9090
+      targetPort: 9090
   type: ClusterIP
